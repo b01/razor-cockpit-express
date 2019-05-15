@@ -1,0 +1,34 @@
+version: "3.5"
+services:
+  app:
+    image: rce-app
+    container_name: "rce-app"
+    working_dir: "/app"
+    build:
+      context: "../"
+      dockerfile: "docker/app/Dockerfile"
+      target: "dev"
+    ports:
+      - "5000:5000"
+    volumes:
+      - "../src/:/app/"
+    networks: 
+      rce:
+        aliases:
+          - "app"
+  proxy:
+    depends_on: ["app"]
+    image: rce-proxy
+    container_name: "rce-proxy"
+    working_dir: "/app"
+    build:
+      context: "../"
+      dockerfile: "docker/nginx/Dockerfile"
+    ports:
+      - "8020:80"
+    volumes:
+      - "../src/:/app/"
+    networks:
+      rce:
+networks:
+  rce:

@@ -1,0 +1,8 @@
+# Directories
+# -----------
+/src/bin
+/src/obj
+# Files
+# -----
+/src/appsettings.Development.json
+/src/appsettings.json
