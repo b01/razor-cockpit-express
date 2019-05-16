@@ -10,6 +10,8 @@ services:
       target: "dev"
     volumes:
       - "../src/:/app/"
+      - "rce_tmp:/tmp"
+      - "rce_root:/root"
     networks: 
       rce:
         aliases:
@@ -34,3 +36,7 @@ services:
           - "proxy"
 networks:
   rce:
+
+volumes:
+  rce_tmp:
+  rce_root:
