@@ -1,5 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:2.2 as dev
-#FROM mcr.microsoft.com/dotnet/core/sdk:2.2-alpine as dev
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2-alpine as dev
 
 WORKDIR /app
 
