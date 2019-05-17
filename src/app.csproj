@@ -8,6 +8,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+
+    <Watch Include="gulpfile.js;js/**/*.js;scss/**/*.scss" Exclude="node_modules/**/*;bin/**/*;obj/**/*" />
   </ItemGroup>
 
+  <Target Name="BuildFrontend" BeforeTargets="Build">
+    <Exec Command="yarn install" />
+    <Exec Command="yarn run build -o $(OutputPath)" />
+  </Target>
 </Project>

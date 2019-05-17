@@ -1,8 +1,11 @@
 # Directories
 # -----------
-/src/bin
-/src/obj
+/src/bin/
+/src/node_modules/
+/src/obj/
+
 # Files
 # -----
 /src/appsettings.Development.json
 /src/appsettings.json
+/src/yarn.lock

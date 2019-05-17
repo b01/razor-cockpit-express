@@ -10,8 +10,9 @@ services:
       target: "dev"
     volumes:
       - "../src/:/app/"
-      - "rce_tmp:/tmp"
-      - "rce_root:/root"
+      - "rce_tmp:/tmp/"
+      - "rce_root:/root/"
+      - "rce_cache:/usr/local/share/.cache/"
     networks: 
       rce:
         aliases:
@@ -40,3 +41,4 @@ networks:
 volumes:
   rce_tmp:
   rce_root:
+  rce_cache:

@@ -1,57 +1,74 @@
 const gulp = require('gulp');
 const sass = require('gulp-sass');
-const ROOT = __dirname;
-
-console.log('ROOT:', ROOT);
-
-// Compile sass into CSS & auto-inject into browsers
-gulp.task('sass', function() {
-    return gulp.src([
-            'src/scss/**/*.scss'
-        ])
-        .pipe(sass())
-        .pipe(gulp.dest("./css"));
+const concat = require('gulp-concat');
+const uglify = require('gulp-uglify');
+const fs = require('fs');
+const ROOT = `${__dirname}`;
+const outIndex = process.argv.findIndex(elm => {
+    return elm === '-o';
 });
 
-// Compile sass into CSS & auto-inject into browsers
-// gulp.task('vendor_css', function() {
-//     return gulp.src([
-//         ])
-//         .pipe(gulp.dest("./css"));
-// });
+if (outIndex < 0) {
+    throw new Error('Missing the (-o) output directory as the first argument.');
+}
 
-// Compile sass into CSS & auto-inject into browsers
-// gulp.task('vendor_img', function() {
-//     return gulp.src([
-//         ])
-//         .pipe(gulp.dest("./img"));
-// });
+const OUT_DIR = `${ROOT}/${process.argv[outIndex + 1]}`;
 
-// Move the javascript files into our /js folder
-gulp.task('vendor_js', function() {
-    return gulp.src([
-            'node_modules/jquery/dist/jquery.min.js',
-        ])
-        .pipe(gulp.dest("./js"));
-});
+if (!fs.existsSync(OUT_DIR)) {
+    throw new Error(`${OUT_DIR} does not exists.`);
+}
 
-// Move the javascript files into our /src/js folder
-gulp.task('js', function() {
-    return gulp.src(['src/js/**/*.js'])
-        .pipe(gulp.dest("./js"));
-});
-
-// Static Server + watching scss/html files
-gulp.task('watch', ['js', 'sass'], function() {
-    gulp.watch(['node_modules/bootstrap/scss/bootstrap.scss', 'src/scss/*.scss'], ['sass']);
-    gulp.watch(
-        [
-            'node_modules/bootstrap/dist/js/bootstrap.min.js', 
-            'node_modules/jquery/dist/jquery.min.js',
-            'src/js/*.js'
+const paths = {
+    styles: {
+        src: `${ROOT}/scss/**/*.scss`,
+        dest: `${OUT_DIR}/css`
+    },
+    js: {
+        src: `${ROOT}/js/**/*.js`,
+        dest: `${OUT_DIR}/js`
+    },
+    vendorJs: {
+        src: [
+            `${ROOT}/node_modules/jquery/dist/jquery.min.js`
         ],
-        ['js']
-    );
-});
+        dest: `${OUT_DIR}/js`
+    }
+};
 
-gulp.task('default', ['vendor_css', 'vendor_img', 'vendor_js', 'js', 'sass']);
+// Compile SCSS into CSS and move them to a place where they can be served by the webserver.
+let styles = () => {
+    return gulp
+        .src(paths.styles.src)
+        .pipe(sass())
+        .pipe(gulp.dest(paths.styles.dest));
+};
+
+// Move the vendor JavaScript files to a place where they can be served by the webserver.
+let vendorJs = () => {
+    return gulp
+        .src(paths.vendorJs.src)
+        .pipe(gulp.dest(paths.vendorJs.dest));
+}
+
+// Move our JavaScript files to a place where they can be served by the webserver.
+let js = () => {
+    return gulp
+        .src(paths.js.src, { sourcemaps: true })
+        .pipe(uglify())
+        .pipe(concat('author.min.js'))
+        .pipe(gulp.dest(paths.js.dest));
+};
+
+// Watching for changes in *.scss & *.js files.
+let watch = () => {
+    gulp.watch([paths.styles.src], styles);
+    gulp.watch([paths.js.src], js);
+    gulp.watch([paths.vendorJs.src], vendorJs);
+};
+
+let build = gulp.series(vendorJs, gulp.parallel(js, styles));
+
+module.exports = {
+    default: build,
+    watch
+};

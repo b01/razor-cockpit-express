@@ -1,0 +1,19 @@
+{
+  "name": "razor-cockpit-express",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "https://github.com/b01/razor-cockpit-express",
+  "author": "Khalifah Khalil Shabazz",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "gulp"
+  },
+  "devDependencies": {
+    "gulp": "^4.0",
+    "gulp-concat": "^2.0",
+    "gulp-sass": "^4.0",
+    "gulp-uglify": "^3.0",
+    "jquery": "^3.0"
+  }
+}
