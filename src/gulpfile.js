@@ -47,6 +47,7 @@ let styles = () => {
 let vendorJs = () => {
     return gulp
         .src(paths.vendorJs.src)
+        .pipe(concat('vendor.js'))
         .pipe(gulp.dest(paths.vendorJs.dest));
 }
 
