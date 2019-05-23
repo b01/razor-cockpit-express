@@ -1,8 +1,9 @@
 version: "3.5"
 services:
   app:
-    image: rce-app
+    depends_on: ["cms"]
     container_name: "rce-app"
+    image: rce-app
     working_dir: "/app"
     build:
       context: "../"
@@ -19,14 +20,14 @@ services:
           - "app"
   proxy:
     depends_on: ["app"]
-    image: rce-proxy
     container_name: "rce-proxy"
+    image: rce-proxy
     working_dir: "/app"
     build:
       context: "../"
       dockerfile: "docker/nginx/Dockerfile"
     ports:
-      - "8022:80"
+      - "8081:80"
       - "4443:443"
     volumes:
       - "../src/:/app/"
@@ -35,10 +36,61 @@ services:
       rce:
         aliases:
           - "proxy"
+  cms:
+    depends_on: ["mongo-db"]
+    image: rce-cms
+    container_name: "rce-cms"
+    build:
+      context: "./cms"
+      dockerfile: "Dockerfile"
+    ports:
+      - "8080:80"
+    # volumes:
+      # - "config.php:/var/www/html/config/config.php"
+    environment:
+      COCKPIT_DATABASE_SERVER: "mongodb://cockpit:cockpit1234@mongo_db:27017"
+      COCKPIT_DATABASE_NAME: cockpit_master
+  mongo-db:
+    container_name: "alpine-mongodb"
+    image: "khalifahks/alpine-mongodb"
+    networks:
+      rce:
+        aliases:
+          - "mongo_db"
+    volumes:
+      - "rce_mongo_data:/var/lib/mongodb/"
+      - "rce_mongo_logs:/var/log/mongodb/"
+    environment:
+      MONGO_HOST: "mongo_db"
+      MONGO_USER: "cockpit"
+      MONGO_PASS: "cockpit1234"
+      MONGO_ADMIN_DB: "admin"
+      MONGO_DKR_DATA_DIR: "/var/lib/mongodb"
+      MONGO_DKR_LOG_DIR: "/var/log/mongodb"
+      MONGO_DKR_BKUP_DIR: "/var/lib/mongodb-backup"
+  mongo-db-support:
+    container_name: "alpine-mongodb-support"
+    image: "khalifahks/alpine-mongodb-support"
+    depends_on:
+      - "mongo-db"
+    networks:
+      rce:
+        aliases:
+          - "mongoDbSupport"
+    volumes:
+      - "rce_mongo_data:/var/lib/mongodb"
+    environment:
+      MONGO_HOST: "mongo_db"
+      MONGO_USER: "cockpit"
+      MONGO_PASS: "cockpit1234"
+      MONGO_ADMIN_DB: "admin"
+      MONGO_DKR_DATA_DIR: "/var/lib/mongodb"
+      MONGO_DKR_BKUP_DIR: "/var/log/mongodb"
 networks:
-  rce:
-
+  rce: null
 volumes:
-  rce_tmp:
-  rce_root:
-  rce_cache:
+  rce_tmp: null
+  rce_root: null
+  rce_cache: null
+  rce_mongo_data: null
+  rce_mongo_logs: null
