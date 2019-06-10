@@ -25,3 +25,4 @@ docker run -v "C:\Users\kshabazz\Projects\razor-cockpit-express\src:/app" -w "/a
 * [Host ASP.NET Core on Linux with Nginx](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/linux-nginx?view=aspnetcore-2.2)
 * [Customize files list to watch](https://docs.microsoft.com/en-us/aspnet/core/tutorials/dotnet-watch?view=aspnetcore-2.2#customize-files-list-to-watch)
 * [A mapping between project.json and csproj properties](https://docs.microsoft.com/en-us/dotnet/core/tools/project-json-to-csproj)
+* [Developing inside a Container](https://code.visualstudio.com/docs/remote/containers)
