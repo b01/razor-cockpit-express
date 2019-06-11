@@ -7,14 +7,13 @@ ASP.NET Core web application.
 * start: `docker-compose -f .\docker\docker-compose.yml up`
 * stop: `docker-compose -f .\docker\docker-compose.yml down`
 
-## How to Make a new ASP.NET App from Docker
+## How To Initialize A New ASP.NET Core App from Docker
 
-The following command was used to generate the files in the `src` directory initially. It can be a good command when you want to 
-make a new ASP.NET web project without installing .NET Core on your host machine and you already have Docker installed. Just be sure to change -v, -w, and --name flags to something suitable for your project.
+The following command was used to generate the initial source files. It can be a good command when you want to make a new ASP.NET web project without installing .NET Core on your host machine and you already have Docker installed. Just be sure to change -v, -w, and --name flags to something suitable for your project.
 
-```powershell
-docker run -v "C:\Users\kshabazz\Projects\razor-cockpit-express\src:/app" -w "/app" --entrypoint=dotnet mcr.microsoft.com/dotnet/core/sdk:2.2 new web
-```
+```bash
+docker run --rm -it -v "${PWD}/RatePartnerWeb:/RatePartnerWeb" -w "/RatePartnerWeb" --entrypoint=dotnet mcr.microsoft.com/dotnet/core/sdk:2.2 new web
+ ```
 
 ## References
 
